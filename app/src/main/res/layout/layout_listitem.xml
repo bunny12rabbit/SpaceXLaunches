@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:id="@+id/parent_layout">
+
+    <ImageView
+        android:id="@+id/mission_path"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/mission_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@+id/mission_path"
+        android:text="@string/mission_name"
+        android:textColor="#000"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+        <!--android:layout_centerVertical="true"-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/launch_date_utc"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/mission_path"
+        android:text="@string/date"
+        android:layout_below="@id/mission_name"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:id="@+id/details"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/mission_path"
+        android:text="@string/details_of_mission"
+        android:layout_below="@id/launch_date_utc"
+        android:ellipsize="end"
+        android:maxLines="4"/>
+
+</RelativeLayout>
