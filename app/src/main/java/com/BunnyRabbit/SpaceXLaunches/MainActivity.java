@@ -1,14 +1,19 @@
 package com.BunnyRabbit.SpaceXLaunches;
 
-import android.support.v7.app.AppCompatActivity;
+import android.net.http.HttpResponseCache;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GetDataFromAPI.CallBackAsync {
 
     private static final String TAG = "MainActivity";
 
@@ -17,16 +22,27 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> mLaunch_date_utc = new ArrayList<>();
     ArrayList<String> mDetails = new ArrayList<>();
 
+    String responseFromApi = "";
+    String apiUrl = "https://api.spacexdata.com/v3/launches";
+
+    public ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: started");
 
-        initImageBitmaps();
+        progressBar = findViewById(R.id.progressbar);
+
+        GetDataFromAPI getDataFromAPI = new GetDataFromAPI(this);
+         getDataFromAPI.execute(apiUrl);
+
+        //initImageBitmaps();
+
     }
 
-    void initImageBitmaps(){
+    /*void initImageBitmaps(){
         Log.d(TAG, "initImageBitmaps: preparing bitmaps");
 
         mImageUrls.add("https://images2.imgbox.com/40/e3/GypSkayF_o.png");
@@ -62,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         mDetails.add("Engine failure at 33 seconds and loss of vehicle");
 
         initRecyclerView();
-    }
+    }*/
 
     void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: init recyclerview");
@@ -70,5 +86,26 @@ public class MainActivity extends AppCompatActivity {
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mImageUrls, mNames, mLaunch_date_utc, mDetails);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    void JsonParse(){
+        
+    }
+
+    @Override
+    public void DoInPreExecute() {
+        progressBar.setVisibility(View.VISIBLE);
+        try {
+            HttpResponseCache myCache = HttpResponseCache.install(
+                    getCacheDir(), 100000L);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void DoInPostExecute(String someResult) {
+        progressBar.setVisibility(View.GONE);
+        responseFromApi = someResult;
     }
 }
