@@ -3,4 +3,5 @@
     <string name="mission_name">mission_name</string>
     <string name="date">date</string>
     <string name="details_of_mission">Details of mission</string>
+    <string name="title_activity_detail">DetailActivity</string>
 </resources>
