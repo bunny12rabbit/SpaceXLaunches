@@ -1,15 +1,14 @@
 package com.BunnyRabbit.SpaceXLaunches;
 
+import android.content.Intent;
 import android.net.http.HttpResponseCache;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,19 +22,35 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements GetDataFromAPI.CallBackAsync {
+public class MainActivity extends AppCompatActivity implements GetDataFromAPI.CallBackAsync, RecyclerViewAdapter.OnItemClickListener {
+
+    public static final String EXTRA_URL = "mission_patch";
+    public static final String EXTRA_NAME = "mission_name";
+    public static final String EXTRA_NUMBER = "flight_number";
+    public static final String EXTRA_DATE = "launch_date_utc";
+    public static final String EXTRA_ROCKET_NAME = "rocket_name";
+    public static final String EXTRA_PAYLOAD_TYPE = "payload_type";
+    public static final String EXTRA_PAYLOAD_MASS = "payload_mass_kg";
+    public static final String EXTRA_DETAILS = "details";
+    public static final String EXTRA_YOUTUBE = "video_link";
+    public static final String EXTRA_WIKI = "wikipedia";
+    public static final String EXTRA_REDDIT = "reddit_media";
+    public static final String EXTRA_ARTICLE = "article_link";
 
     private static final String TAG = "MainActivity";
 
     private ArrayList<Launches> mLaunches;
     private RequestQueue mRequestQueue;
+    private String nullInfo = "No information";
 
+    //In case of using HttpURLConnection to get JSON data in String for further use
     String responseFromApi = "";
-    static public String apiUrl = "https://api.spacexdata.com/v3/launches?filter=flight_number,mission_name," +
-            "launch_date_utc,rocket(rocket_name,second_stage/payloads/(payload_type,payload_mass_kg),details,links)";
+
+    //JSON, sorted by date, new is upstairs with needed fields
+    static public String apiUrl = "https://api.spacexdata.com/v3/launches?sort=launch_date_utc&order=desc&filter=flight_number," +
+            "mission_name,launch_date_utc,rocket(rocket_name,second_stage/payloads/(payload_type,payload_mass_kg),details,links)";
 
     public JSONArray jsonArray;
     static public ProgressBar progressBar;
@@ -44,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements GetDataFromAPI.Ca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate: started");
 
         progressBar = findViewById(R.id.progressbar);
 
@@ -87,13 +101,17 @@ public class MainActivity extends AppCompatActivity implements GetDataFromAPI.Ca
                                     payload_mass_kg = payload.optInt("payload_mass_kg");
                                 }
                                 String details = launch.optString("details");
-
+                                details = details.equals("null") ? nullInfo : details;  // Check if null value presented, then change to "No information..."
                                 JSONObject links = launch.getJSONObject("links");
                                 String mission_patch = links.optString("mission_patch");
                                 String wikipedia = links.optString("wikipedia");
+                                wikipedia = wikipedia.equals("null") ? nullInfo : wikipedia;
                                 String reddit_media = links.optString("reddit_media");
+                                reddit_media = reddit_media.equals("null") ? nullInfo : reddit_media;
                                 String article_link = links.optString("article_link");
+                                article_link = article_link.equals("null") ? nullInfo : article_link;
                                 String video_link = links.optString("video_link");
+                                video_link = video_link.equals("null") ? nullInfo : video_link;
 
                                 mLaunches.add(new Launches(mission_name, launch_date_utc, flight_number,mission_patch, rocket_name,
                                         payload_type, payload_mass_kg, details, wikipedia, reddit_media, article_link, video_link));
@@ -162,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements GetDataFromAPI.Ca
         recyclerView.setHasFixedSize(true);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, list);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(MainActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -180,5 +199,27 @@ public class MainActivity extends AppCompatActivity implements GetDataFromAPI.Ca
     public void DoInPostExecute(String someResult) {
         progressBar.setVisibility(View.GONE);
         responseFromApi = someResult;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Launches currentItem = mLaunches.get(position);
+
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+
+        detailIntent.putExtra(EXTRA_URL, currentItem.getMission_patch());
+        detailIntent.putExtra(EXTRA_NAME, currentItem.getMission_name());
+        detailIntent.putExtra(EXTRA_NUMBER, currentItem.getFlight_number());
+        detailIntent.putExtra(EXTRA_DATE, currentItem.getLaunch_date_utc());
+        detailIntent.putExtra(EXTRA_ROCKET_NAME, currentItem.getRocket_name());
+        detailIntent.putExtra(EXTRA_PAYLOAD_TYPE, currentItem.getPayload_type());
+        detailIntent.putExtra(EXTRA_PAYLOAD_MASS, currentItem.getPayload_mass_kg());
+        detailIntent.putExtra(EXTRA_DETAILS, currentItem.getDetails());
+        detailIntent.putExtra(EXTRA_YOUTUBE, currentItem.getVideo_link());
+        detailIntent.putExtra(EXTRA_WIKI, currentItem.getWikipedia());
+        detailIntent.putExtra(EXTRA_REDDIT, currentItem.getReddit_media());
+        detailIntent.putExtra(EXTRA_ARTICLE, currentItem.getArticle_link());
+
+        startActivity(detailIntent);
     }
 }
