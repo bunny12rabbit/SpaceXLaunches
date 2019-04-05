@@ -41,6 +41,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         final Launches currentItem = mLaunches.get(position);
 
+        MainActivity.progressBar.setVisibility(View.VISIBLE);
+
         Glide.with(mContext)
                 .asBitmap()
                 .load(currentItem.getMission_patch())
@@ -56,6 +58,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Toast.makeText(mContext,currentItem.getMission_name(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        MainActivity.progressBar.setVisibility(View.GONE);
     }
 
     @Override

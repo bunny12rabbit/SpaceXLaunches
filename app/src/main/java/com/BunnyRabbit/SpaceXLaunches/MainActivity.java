@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements GetDataFromAPI.Ca
             "launch_date_utc,rocket(rocket_name,second_stage/payloads/(payload_type,payload_mass_kg),details,links)";
 
     public JSONArray jsonArray;
-    public ProgressBar progressBar;
+    static public ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
