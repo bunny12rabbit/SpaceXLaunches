@@ -20,52 +20,47 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private static final String TAG = "RecyclerViewAdapter";
 
-    private ArrayList<String> mMission_name;
-    private ArrayList<String> mMission_path;
-    private ArrayList<String> mLaunch_date_utc;
-    private ArrayList<String> mDetails;
+    private ArrayList<Launches> mLaunches;
     private Context mContext;
 
-    public RecyclerViewAdapter(Context mContext, ArrayList<String> mMission_path, ArrayList<String> mMission_name,
-                               ArrayList<String> mLaunch_date_utc, ArrayList<String> mDetails) {
+    public RecyclerViewAdapter(Context mContext, ArrayList<Launches> launches) {
         this.mContext = mContext;
-        this.mMission_path = mMission_path;
-        this.mMission_name = mMission_name;
-        this.mLaunch_date_utc = mLaunch_date_utc;
-        this.mDetails = mDetails;
+        this.mLaunches = launches;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_listitem, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_cardvew, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Log.d(TAG, "onBindViewHolder: called.");
+
+        final Launches currentItem = mLaunches.get(position);
 
         Glide.with(mContext)
                 .asBitmap()
-                .load(mMission_path.get(i))
+                .load(currentItem.getMission_patch())
                 .into(viewHolder.mission_path);
-        viewHolder.mission_name.setText(mMission_name.get(i));
-        viewHolder.launch_date_utc.setText(mLaunch_date_utc.get(i));
-        viewHolder.details.setText(mDetails.get(i));
+        viewHolder.mission_name.setText(currentItem.getMission_name());
+        viewHolder.launch_date_utc.setText(currentItem.getLaunch_date_utc());
+        viewHolder.details.setText(currentItem.getDetails());
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: clicked on:" + mMission_name.get(i));
+                Log.d(TAG, "onClick: clicked on:" + currentItem.getMission_name());
                 //Событие по нажатию на элемент списка
-                Toast.makeText(mContext, mMission_name.get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,currentItem.getMission_name(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mMission_name.size();
+        return mLaunches.size();
     }
 
     public class  ViewHolder extends RecyclerView.ViewHolder{
@@ -78,10 +73,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mission_path = itemView.findViewById(R.id.mission_path);
-            mission_name = itemView.findViewById(R.id.mission_name);
-            launch_date_utc = itemView.findViewById(R.id.launch_date_utc);
-            details = itemView.findViewById(R.id.details);
+            mission_path = itemView.findViewById(R.id. image_mission_patch);
+            mission_name = itemView.findViewById(R.id.text_mission_name);
+            launch_date_utc = itemView.findViewById(R.id.text_launch_date_utc);
+            details = itemView.findViewById(R.id.text_details);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }

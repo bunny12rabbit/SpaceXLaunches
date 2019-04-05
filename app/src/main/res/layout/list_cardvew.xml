@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:id="@+id/parent_layout">
+        
+        <ImageView
+            android:id="@+id/image_mission_patch"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/text_mission_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@id/image_mission_patch"
+            android:text="Mission Name"
+            android:textColor="@android:color/black"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/text_launch_date_utc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/date"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@id/image_mission_patch"
+            android:layout_below="@id/text_mission_name"/>
+
+        <TextView
+            android:id="@+id/text_details"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@id/image_mission_patch"
+            android:layout_below="@id/text_launch_date_utc"
+            android:text="@string/details_of_mission"
+            android:ellipsize="end"
+            android:maxLines="4"/>
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
