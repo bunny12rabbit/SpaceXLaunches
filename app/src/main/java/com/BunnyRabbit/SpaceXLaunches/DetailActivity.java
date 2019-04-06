@@ -2,10 +2,13 @@ package com.BunnyRabbit.SpaceXLaunches;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import java.util.Objects;
 
 import static com.BunnyRabbit.SpaceXLaunches.MainActivity.EXTRA_ARTICLE;
 import static com.BunnyRabbit.SpaceXLaunches.MainActivity.EXTRA_DATE;
@@ -37,9 +40,23 @@ public class DetailActivity extends AppCompatActivity {
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        // Implemented back button in ToolBar
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         // Getting Intent EXTRA data about fields
         Bundle intent = getIntent().getExtras();
@@ -60,7 +77,7 @@ public class DetailActivity extends AppCompatActivity {
         // Setting intent EXTRA data intro views
 
         //  Check if image presents, if no set mock
-        if (intent.getString(EXTRA_URL).equals("null")){
+        if (intent.getString(EXTRA_URL).equals("null")) {
             mission_patch.setImageResource(R.drawable.no_img);
         } else {
             Glide.with(this)
